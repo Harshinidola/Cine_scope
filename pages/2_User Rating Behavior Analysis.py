@@ -31,7 +31,7 @@ user_stats = ratings.groupby('userId').agg(
 user_stats['rating_variance'] = user_stats['rating_variance'].fillna(0)
 
 # 3D visualization with variance
-st.subheader("3D Rating Variance Analysis")
+st.subheader("Rating Analysis Plot")
 fig_raw = px.scatter_3d(
     user_stats, 
     x='rating_variance', 
@@ -42,7 +42,7 @@ fig_raw = px.scatter_3d(
     hover_data=['userId', 'rating_variance', 'avg_rating', 'rating_frequency'],
     color_continuous_scale='rainbow',
     opacity=0.7,
-    title='3D Rating Pattern Analysis: Variance vs Average vs Frequency'
+    title='User Rating Pattern Analysis: Variance vs Average vs Frequency'
 )
 fig_raw.update_layout(
     scene=dict(
@@ -59,6 +59,29 @@ fig_raw.update_layout(
     )
 )
 st.plotly_chart(fig_raw, use_container_width=True)
+
+st.subheader("🌐 Overall Rating Histogram")
+
+# Plot histogram of all ratings
+fig_hist = px.histogram(
+    ratings, 
+    x='rating', 
+    nbins=20, 
+    title='Overall Rating Histogram',
+    labels={'rating': 'Rating'},
+    color_discrete_sequence=['#FF4B4B']
+)
+
+fig_hist.update_layout(
+    template="plotly_dark",
+    xaxis_title="Rating",
+    yaxis_title="Frequency",
+    showlegend=False
+)
+
+st.plotly_chart(fig_hist, use_container_width=True)
+
+
 
 # GMM feature extraction with 3 components
 def extract_gmm_features(user_ratings):
@@ -125,7 +148,7 @@ cluster_df = pd.DataFrame({
     'RatingCount': intermediate_df['RatingCount']
 })
 
-st.subheader("Cluster Analysis Results")
+st.subheader("Cluster Analysis Results of GMM Features")
 fig_cluster = px.scatter(
     cluster_df, 
     x='Component1', 
@@ -138,11 +161,6 @@ fig_cluster = px.scatter(
 )
 st.plotly_chart(fig_cluster, use_container_width=True)
 
-# Intermediate features display
-with st.expander("🔍 View Intermediate GMM Features"):
-    st.dataframe(intermediate_df.style.background_gradient(cmap='Blues'), 
-                height=300,
-                use_container_width=True)
 
 # Cluster analysis
 st.subheader("📊 Cluster Characteristics")
@@ -212,7 +230,7 @@ fig = px.line(
     line_group='Cluster',
     hover_name='Cluster',
     hover_data={'Avg Frequency': ':.1f'},
-    title='Cluster Rating Distributions (Line Width = Rating Frequency)'
+    title='Cluster Rating Distributions '
 )
 
 # Scale line widths based on frequency
@@ -228,7 +246,7 @@ for idx, cluster in enumerate(plot_df['Cluster'].unique()):
 fig.update_layout(
     annotations=[
         dict(
-            text=f"Line thickness ↔ Rating frequency<br>(Min: {min_freq:.1f}, Max: {max_freq:.1f})",
+            text=f"Line thickness ↔ Cluster frequency",
             xref="paper", yref="paper",
             x=0.95, y=0.85,
             showarrow=False,
