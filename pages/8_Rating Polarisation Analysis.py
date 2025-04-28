@@ -10,7 +10,7 @@ st.title('Polarized Movie Rating Analysis')
 # Load data
 @st.cache
 def load_data():
-    ratings = pd.read_csv('ratings.csv')
+    ratings = pd.read_csv('ratings_new.csv')
     movies = pd.read_csv('movies_metadata.csv', low_memory=False)
     return ratings, movies
 
@@ -44,7 +44,7 @@ movies['release_year'] = pd.to_datetime(movies['release_date'], errors='coerce')
 df = ratings.merge(movies, on='movieId')
 
 # Convert timestamp to readable date
-df['date'] = pd.to_datetime(df['timestamp'], unit='s')
+# df['date'] = pd.to_datetime(df['timestamp'], unit='s')
 
 #  Main Page Filter: Select Year
 st.subheader('Select Year')
@@ -102,30 +102,30 @@ else:
     ax.grid(True)
     st.pyplot(fig)
 
-    # 🌟 Main Page Filter: Select Movie
-    st.subheader('Select a Movie to Analyze')
-    movie_options = top5['movieId'].tolist()
-    selected_movie_id = st.selectbox(
-        'Select a Movie:',
-        movie_options,
-        format_func=lambda x: movies[movies['movieId'] == x]['title'].values[0]
-    )
+    # # 🌟 Main Page Filter: Select Movie
+    # st.subheader('Select a Movie to Analyze')
+    # movie_options = top5['movieId'].tolist()
+    # selected_movie_id = st.selectbox(
+    #     'Select a Movie:',
+    #     movie_options,
+    #     format_func=lambda x: movies[movies['movieId'] == x]['title'].values[0]
+    # )
 
-    selected_movie_name = movies[movies['movieId'] == selected_movie_id]['title'].values[0]
-    movie_ratings = df[df['movieId'] == selected_movie_id]
-    movie_ratings['year_month'] = movie_ratings['date'].dt.to_period('M')
+    # selected_movie_name = movies[movies['movieId'] == selected_movie_id]['title'].values[0]
+    # movie_ratings = df[df['movieId'] == selected_movie_id]
+    # movie_ratings['year_month'] = movie_ratings['date'].dt.to_period('M')
 
-    rating_trend = movie_ratings.groupby('year_month')['rating'].mean().reset_index()
-    rating_trend['year_month'] = rating_trend['year_month'].dt.to_timestamp()
+    # rating_trend = movie_ratings.groupby('year_month')['rating'].mean().reset_index()
+    # rating_trend['year_month'] = rating_trend['year_month'].dt.to_timestamp()
 
-    st.subheader(f" Polarization Over Time - {selected_movie_name}")
-    fig3, ax3 = plt.subplots(figsize=(10,6))
-    sns.lineplot(x='year_month', y='rating', data=rating_trend, marker='o', ax=ax3)
-    ax3.set_xlabel('Year-Month')
-    ax3.set_ylabel('Average Rating')
-    ax3.grid(True)
-    ax3.set_ylim(0,5)
-    st.pyplot(fig3)
+    # st.subheader(f" Polarization Over Time - {selected_movie_name}")
+    # fig3, ax3 = plt.subplots(figsize=(10,6))
+    # sns.lineplot(x='year_month', y='rating', data=rating_trend, marker='o', ax=ax3)
+    # ax3.set_xlabel('Year-Month')
+    # ax3.set_ylabel('Average Rating')
+    # ax3.grid(True)
+    # ax3.set_ylim(0,5)
+    # st.pyplot(fig3)
 
 # 📈 Polarization Over Years
 st.subheader("Average Polarization Over Years")
