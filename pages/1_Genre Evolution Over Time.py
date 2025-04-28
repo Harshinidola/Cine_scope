@@ -109,13 +109,13 @@ st.subheader("🎥 Animated Genre Popularity Over Time")
 
 with st.expander("Filters for Animated Chart", expanded=True):
     anim_genres = st.multiselect(
-        "Select Genres (Animation)", 
+        "Select Genres", 
         options=unique_genres, 
         default=unique_genres, 
         key="anim_genres"
     )
     anim_year_range = st.slider(
-        "Select Year Range (Animation)", 
+        "Select Year Range", 
         int(df_exploded['year'].min()), 
         2017, 
         (1980, 2017), 
@@ -244,9 +244,3 @@ fig_network = go.Figure(data=[edge_trace, node_trace],
 ))
 
 st.plotly_chart(fig_network, use_container_width=True)
-
-
-
-
-
-
